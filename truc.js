@@ -10,10 +10,14 @@ var sheet;
 
 function onOpen() {
   spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  sheet = SpreadsheetApp.getActiveSheet();
-  var subMenus = [{name:"Start",functionName:"start"},{name:"Stop",functionName:"stop"},{name:"step", functionName:"raycast"}];
+  var subMenus = [
+      {name:"Start",functionName:"start"},
+      {name:"Stop",functionName:"stop"},
+      {name:"step", functionName:"raycast"}
+  ];
   spreadsheet.addMenu("sheetcaster", subMenus);
   
+  sheet = SpreadsheetApp.getActiveSheet();
   for(var col = 1; col <= SIZE_X; col++) {
     sheet.setColumnWidth(col, 20);
   }

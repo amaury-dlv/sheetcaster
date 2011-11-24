@@ -1,4 +1,4 @@
-v r gColor = 0;
+var gColor = 0;
 var gX0 = 1;
 var gY0 = 1;
 var gA = 1;
@@ -64,7 +64,7 @@ function draw_line_wall(x, k) {
   var j = a;
   var i = a;
   gColor = 90;
-  while (size-- > 0)
+  while (Math.round(size--) > 0)
   {
     //put_pixel_to_img(param, x, i++, COLOR_WALL);
     //put_pixel_to_img(param, x, j--, COLOR_WALL);

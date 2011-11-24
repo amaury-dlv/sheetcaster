@@ -6,9 +6,12 @@ var gA = 1;
 var SIZE_X = 24;
 var SIZE_Y = 18;
 
+var sheet;
+
 function onOpen() {
+  sheet = SpreadsheetApp.getActiveSpreadsheet();
   var subMenus = [{name:"Start",functionName:"start"},{name:"Stop",functionName:"stop"},{name:"step", functionName:"raycast"}];
-  SpreadsheetApp.getActiveSpreadsheet().addMenu("sheetcaster", subMenus);
+  sheet.addMenu("sheetcaster", subMenus);
 }
 
 function calcul_wall(vec, x) {

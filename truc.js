@@ -1,10 +1,9 @@
-var gColor = 0;
-var gX0 = 1;
-var gY0 = 1;
-var gA = 1;
+var gX0 = 3;
+var gY0 = 6;
+var gA = 0.86;
 
-var SIZE_X = 24;
-var SIZE_Y = 18;
+var SIZE_X = 64;
+var SIZE_Y = 64;
 
 var sheet;
 
@@ -13,12 +12,44 @@ function onOpen() {
   var subMenus = [
       {name:"Start",functionName:"start"},
       {name:"Stop",functionName:"stop"},
+      {name:"Left",functionName:"left"},
+      {name:"Right",functionName:"right"},
+      {name:"Up",functionName:"up"},
+      {name:"Down",functionName:"down"},
       {name:"Step", functionName:"raycast"}
   ];
   spreadsheet.addMenu("sheetcaster", subMenus);
   
   sheet = SpreadsheetApp.getActiveSheet();
+  start();
 }
+
+function right() {
+  gA = gA - 0.25;
+  if (gA < 0) {
+    gA = gA + 6.28;
+  }
+  raycast();
+}
+
+function left() {
+  gA = gA + 0.25;
+  if (gA > 6.28) {
+    gA = gA + 6.28;
+  } 
+  raycast();
+}
+
+function up() {
+  gX0  = gX0 + 1;
+  raycast();
+}
+
+function down() {
+  gY0  = gY0 - 1;
+  raycast();
+}
+
 
 function start() {
   var sheet = sheet = SpreadsheetApp.getActiveSheet();
@@ -39,12 +70,12 @@ function start() {
     sheet.deleteRows(1, sheet.getMaxRows() - SIZE_Y);
   }
 
-  for(var col = 1; col <= SIZE_X; col++) {
-    sheet.setColumnWidth(col, 20);
-  }
-
   for(var row = 1; row <= SIZE_Y; row++) {
     sheet.setRowHeight(row, 20);
+  }
+
+  for(var col = 1; col <= SIZE_X; col++) {
+    sheet.setColumnWidth(col, 20);
   }
 
   sheet.clear();
@@ -91,6 +122,23 @@ function calc_inter(vec) {
   return (k);
 }
 
+function getColor(k) {
+    var color;
+    if (k < 1) {
+      color = "DDDDDD";
+    } else if (k < 2) {
+      color = "BBBBBB";
+    } else if (k < 4) {
+      color = "999999";
+    } else if (k < 6) {
+      color = "777777";
+    } else if (k < 8) {
+      color = "555555";
+    } else {
+      color = "000000";
+    }
+  return color;
+}
 
 function draw_line_wall(x, k) {
   var size;
@@ -103,31 +151,32 @@ function draw_line_wall(x, k) {
     size = 0;
   if (size > SIZE_Y)
     size = SIZE_Y;
-  var a = Math.round(SIZE_Y / 2);
+  var a = SIZE_Y / 2;
   var j = a;
   var i = a;
-  gColor = 90;
   for (var lin = 0; lin < SIZE_Y; lin++) {
-    Logger.log("sheet: " + x + " " + lin);
-    sheet.getRange(x + 1,lin + 1,1,1).setBackgroundColor("#000000");
+    sheet.getRange(lin + 1,x + 1,1,1).setBackgroundColor("#FFFFFF");
   }
 
   while ((size--) > 0)
   {
-    sheet.getRange(x + 1, i++ + 1, 1, 1).setBackgroundColor("#ffffff");
-    sheet.getRange(x + 1, j-- + 1, 1, 1).setBackgroundColor("#ffffff");
+    var color = getColor(k);
+    sheet.getRange(i, x + 1, 1, 1).setBackgroundColor("#" + color);
+    sheet.getRange(j, x + 1, 1, 1).setBackgroundColor("#" + color);
+    i++;
+    j--;
   }
 }
 
 function Vector() {
-  this.x = 1;
-  this.y = 1;
+  this.x = -0.7;
+  this.y = -0.7;
 }
 
 function raycast() {
   onOpen();
   var vec = new Vector();
-  for (var x = 0; x < SIZE_Y; x++) {
+  for (var x = 0; x < SIZE_X; x++) {
     calcul_wall(vec, x);
     var k = calc_inter(vec);
     draw_line_wall(x, k);

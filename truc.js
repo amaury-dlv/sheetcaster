@@ -22,6 +22,7 @@ function onOpen() {
 
 function start() {
   var sheet = sheet = SpreadsheetApp.getActiveSheet();
+
   if(SIZE_X > sheet.getMaxColumns()) {
     sheet.insertColumns(1, SIZE_X - sheet.getMaxColumns());
   }
@@ -126,7 +127,6 @@ function Vector() {
 function raycast() {
   onOpen();
   var vec = new Vector();
-  var x = 0;
   for (var x = 0; x < SIZE_Y; x++) {
     calcul_wall(vec, x);
     var k = calc_inter(vec);

@@ -89,8 +89,9 @@ function draw_line_wall(x, k) {
 
   while (Math.round(size--) > 0)
   {
-    sheet.getRange(x + 1, Math.round(i++) + 1, 1, 1).setBackgroundColor("#ffffff");
-    sheet.getRange(x + 1, Math.round(j--) + 1, 1, 1).setBackgroundColor("#ffffff");
+    sheet.getRange(x + 1, Math.round(i) + 1, 1, 1).setBackgroundColor("#ffffff");
+    sheet.getRange(x + 1, Math.round(-i) + 1, 1, 1).setBackgroundColor("#ffffff");
+    i++;
     //put_pixel_to_img(param, x, i++, COLOR_WALL);
     //put_pixel_to_img(param, x, j--, COLOR_WALL);
   }

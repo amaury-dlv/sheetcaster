@@ -1,4 +1,4 @@
-var gColor = 0;
+v r gColor = 0;
 var gX0 = 1;
 var gY0 = 1;
 var gA = 1;
@@ -73,9 +73,8 @@ function draw_line_wall(x, k) {
 }
 
 function Vector() {
-  this.x = 0;
-  this.y = 0;
-  this.z = 0;
+  this.x = 1;
+  this.y = 1;
 }
 
 function raycast() {

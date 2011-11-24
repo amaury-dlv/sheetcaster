@@ -13,16 +13,35 @@ function onOpen() {
   var subMenus = [
       {name:"Start",functionName:"start"},
       {name:"Stop",functionName:"stop"},
-      {name:"step", functionName:"raycast"}
+      {name:"Step", functionName:"raycast"}
   ];
   spreadsheet.addMenu("sheetcaster", subMenus);
   
   sheet = SpreadsheetApp.getActiveSheet();
+}
+
+function start() {
+  if(SIZE_X > sheet.getMaxColumns()) {
+    sheet.insertColumns(1, SIZE_X - sheet.getMaxColumns());
+  }
+
+  if(SIZE_X < sheet.getMaxColumns()) {
+    sheet.deleteColumns(1, sheet.getMaxColumns() - SIZE_X);
+  }
+
+  if(SIZE_Y > sheet.getMaxRows()) {
+    sheet.insertRows(1, SIZE_Y - sheet.getMaxRows());
+  }
+
+  if(SIZE_Y < sheet.getMaxRows()) {
+    sheet.deleteRows(1, sheet.getMaxRows() - SIZE_Y);
+  }
+
   for(var col = 1; col <= SIZE_X; col++) {
     sheet.setColumnWidth(col, 20);
   }
 
-  for(var row = 1; row <= SIZE_Y+1; row++) {
+  for(var row = 1; row <= SIZE_Y; row++) {
     sheet.setRowHeight(row, 20);
   }
 
@@ -95,8 +114,6 @@ function draw_line_wall(x, k) {
   {
     sheet.getRange(x + 1, i++ + 1, 1, 1).setBackgroundColor("#ffffff");
     sheet.getRange(x + 1, j-- + 1, 1, 1).setBackgroundColor("#ffffff");
-    //put_pixel_to_img(param, x, i++, COLOR_WALL);
-    //put_pixel_to_img(param, x, j--, COLOR_WALL);
   }
 }
 

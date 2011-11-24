@@ -6,6 +6,11 @@ var gA = 1;
 var SIZE_X = 24;
 var SIZE_Y = 18;
 
+function onOpen() {
+  var subMenus = [{name:"Start",functionName:"start"},{name:"Stop",functionName:"stop"},{name:"step", functionName:"raycast"}];
+  SpreadsheetApp.getActiveSpreadsheet().addMenu("sheetcaster", subMenus);
+}
+
 function calcul_wall(vec, x) {
   var cos = Math.cos(gA);
   var sin = Math.sin(gA);

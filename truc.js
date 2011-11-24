@@ -9,9 +9,10 @@ var SIZE_Y = 18;
 var sheet;
 
 function onOpen() {
-  sheet = SpreadsheetApp.getActiveSpreadsheet();
+  spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  sheet = SpreadsheetApp.getActiveSheet();
   var subMenus = [{name:"Start",functionName:"start"},{name:"Stop",functionName:"stop"},{name:"step", functionName:"raycast"}];
-  sheet.addMenu("sheetcaster", subMenus);
+  spreadsheet.addMenu("sheetcaster", subMenus);
 }
 
 function calcul_wall(vec, x) {
@@ -71,12 +72,15 @@ function draw_line_wall(x, k) {
   var j = a;
   var i = a;
   gColor = 90;
-  for (var lin = 0; lin < SIZE_Y; lin++)
-    sheet.getRange(x,lin,1,1).setBackgroundColor("#000000");
+  for (var lin = 0; lin < SIZE_Y; lin++) {
+    Logger.log("sheet: " + x + " " + lin);
+    sheet.getRange(x + 1,lin + 1,1,1).setBackgroundColor("#000000");
+  }
+
   while (Math.round(size--) > 0)
   {
-    sheet.getRange(x, Math.round(i++), 1, 1).setBackgroundColor("#ffffff");
-    sheet.getRange(x, Math.round(j--), 1, 1).setBackgroundColor("#ffffff");
+    sheet.getRange(x + 1, Math.round(i++) + 1, 1, 1).setBackgroundColor("#ffffff");
+    sheet.getRange(x + 1, Math.round(j--) + 1, 1, 1).setBackgroundColor("#ffffff");
     //put_pixel_to_img(param, x, i++, COLOR_WALL);
     //put_pixel_to_img(param, x, j--, COLOR_WALL);
   }
@@ -89,6 +93,7 @@ function Vector() {
 }
 
 function raycast() {
+  onOpen();
   var vec = new Vector();
   var x = 0;
   for (var x = 0; x < SIZE_Y; x++) {

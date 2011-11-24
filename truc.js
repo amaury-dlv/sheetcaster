@@ -6,7 +6,6 @@ var gA = 1;
 var SIZE_X = 24;
 var SIZE_Y = 18;
 
-
 function calcul_wall(vec, x) {
   var cos = Math.cos(gA);
   var sin = Math.sin(gA);
@@ -64,8 +63,12 @@ function draw_line_wall(x, k) {
   var j = a;
   var i = a;
   gColor = 90;
+  for (var lin = 0; lin < SIZE_Y; lin++)
+    sheet.getRange(x,lin,1,1).setBackgroundColor("#000000");
   while (Math.round(size--) > 0)
   {
+    sheet.getRange(x, Math.round(i++), 1, 1).setBackgroundColor("#ffffff");
+    sheet.getRange(x, Math.round(j--), 1, 1).setBackgroundColor("#ffffff");
     //put_pixel_to_img(param, x, i++, COLOR_WALL);
     //put_pixel_to_img(param, x, j--, COLOR_WALL);
   }
@@ -80,19 +83,11 @@ function Vector() {
 function raycast() {
   var vec = new Vector();
   var x = 0;
-  while (x < SIZE_X)
-  {
+  for (var x = 0; x < SIZE_Y; x++) {
     calcul_wall(vec, x);
     var k = calc_inter(vec);
     draw_line_wall(x, k);
     Logger.log("TEST " + x + " - " + k);
-    x++;
   }
-  //mlx_put_image_to_window(param->mlx_ptr, param->win_ptr, param->img, 0, 0);
-  //mlx_put_image_to_window(param->mlx_ptr, param->win_ptr,
-  //    param->image.img,
-  //    SIZE_X - ((SIZE_X / 2) + 80),
-  //    SIZE_Y - ((SIZE_Y / 3) - 40)
-  //    );
 }
 

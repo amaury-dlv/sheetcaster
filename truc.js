@@ -21,6 +21,7 @@ function onOpen() {
 }
 
 function start() {
+  var sheet = sheet = SpreadsheetApp.getActiveSheet();
   if(SIZE_X > sheet.getMaxColumns()) {
     sheet.insertColumns(1, SIZE_X - sheet.getMaxColumns());
   }

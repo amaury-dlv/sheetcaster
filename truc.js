@@ -102,7 +102,7 @@ function draw_line_wall(x, k) {
     size = 0;
   if (size > SIZE_Y)
     size = SIZE_Y;
-  var a = Math,round(SIZE_Y / 2);
+  var a = Math.round(SIZE_Y / 2);
   var j = a;
   var i = a;
   gColor = 90;

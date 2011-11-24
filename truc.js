@@ -84,7 +84,6 @@ function draw_line_wall(x, k) {
     //put_pixel_to_img(param, x, i++, COLOR_WALL);
     //put_pixel_to_img(param, x, j--, COLOR_WALL);
   }
-  //my_put_top_line_wall(param, &x, &j);
 }
 
 function Vector() {

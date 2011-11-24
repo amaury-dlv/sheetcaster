@@ -82,7 +82,7 @@ function draw_line_wall(x, k) {
     size = 0;
   if (size > SIZE_Y)
     size = SIZE_Y;
-  var a = SIZE_Y / 2;
+  var a = Math,round(SIZE_Y / 2);
   var j = a;
   var i = a;
   gColor = 90;
@@ -91,11 +91,10 @@ function draw_line_wall(x, k) {
     sheet.getRange(x + 1,lin + 1,1,1).setBackgroundColor("#000000");
   }
 
-  while (Math.round(size--) > 0)
+  while ((size--) > 0)
   {
-    sheet.getRange(x + 1, Math.round(i) + 1, 1, 1).setBackgroundColor("#ffffff");
-    sheet.getRange(x + 1, Math.round(-i) + 1, 1, 1).setBackgroundColor("#ffffff");
-    i++;
+    sheet.getRange(x + 1, i++ + 1, 1, 1).setBackgroundColor("#ffffff");
+    sheet.getRange(x + 1, j-- + 1, 1, 1).setBackgroundColor("#ffffff");
     //put_pixel_to_img(param, x, i++, COLOR_WALL);
     //put_pixel_to_img(param, x, j--, COLOR_WALL);
   }

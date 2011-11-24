@@ -10,13 +10,12 @@ var sheet;
 function onOpen() {
   spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var subMenus = [
-      {name:"Start",functionName:"start"},
+      {name:"Begin",functionName:"raycast"},
       {name:"Stop",functionName:"stop"},
       {name:"Left",functionName:"left"},
       {name:"Right",functionName:"right"},
       {name:"Up",functionName:"up"},
-      {name:"Down",functionName:"down"},
-      {name:"Step", functionName:"raycast"}
+      {name:"Down",functionName:"down"}
   ];
   spreadsheet.addMenu("sheetcaster", subMenus);
   

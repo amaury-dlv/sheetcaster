@@ -10,8 +10,8 @@ var sheet;
 
 function onOpen() {
   sheet = SpreadsheetApp.getActiveSpreadsheet();
-  var subMenus = [{name:"Start",functionName:"start"},{name:"Stop",functionName:"stop"},{name:"step", functionName:"raycast"}];
-  sheet.addMenu("sheetcaster", subMenus);
+  var subMenus = [{name:"Start",functionName:"start"},{name:"Stop",functionName:"stop"},{name:"Step", functionName:"raycast"}];
+  sheet.addMenu("Sheetcaster", subMenus);
 }
 
 function calcul_wall(vec, x) {
@@ -77,10 +77,7 @@ function draw_line_wall(x, k) {
   {
     sheet.getRange(x, Math.round(i++), 1, 1).setBackgroundColor("#ffffff");
     sheet.getRange(x, Math.round(j--), 1, 1).setBackgroundColor("#ffffff");
-    //put_pixel_to_img(param, x, i++, COLOR_WALL);
-    //put_pixel_to_img(param, x, j--, COLOR_WALL);
   }
-  //my_put_top_line_wall(param, &x, &j);
 }
 
 function Vector() {

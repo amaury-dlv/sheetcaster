@@ -13,6 +13,16 @@ function onOpen() {
   sheet = SpreadsheetApp.getActiveSheet();
   var subMenus = [{name:"Start",functionName:"start"},{name:"Stop",functionName:"stop"},{name:"step", functionName:"raycast"}];
   spreadsheet.addMenu("sheetcaster", subMenus);
+  
+  for(var col = 1; col <= SIZE_X; col++) {
+    sheet.setColumnWidth(col, 20);
+  }
+
+  for(var row = 1; row <= SIZE_Y+1; row++) {
+    sheet.setRowHeight(row, 20);
+  }
+
+  sheet.clear();
 }
 
 function calcul_wall(vec, x) {

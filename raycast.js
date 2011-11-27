@@ -129,6 +129,7 @@ function computeWall_(vec, x) {
   vec.y = 0.5 * sin + y1 * cos;
 }
 
+var side;
 function getWallDist_(vec) {
   var x = gX0;
   var y = gY0;
@@ -139,6 +140,12 @@ function getWallDist_(vec) {
     y = gY0 + k * vec.y;
     k = k + 0.01;
   }
+
+  side = 0;
+  if (Math.min(Math.abs(x - Math.floor(x)), Math.abs(x - Math.ceil(x))) <
+      Math.min(Math.abs(y - Math.floor(y)), Math.abs(y - Math.ceil(y))))
+  side = 1;
+
   return (k);
 }
 
@@ -148,9 +155,14 @@ function drawBackground_() {
 }
 
 function getColor_(k) {
-  k = k / 11;
-  comp = Math.round(0xff - k * 0xff);
-  color = (comp << 16) | (comp << 8) | (comp);
+  k = 1 - (k / 12);
+  var r,g,b, color;
+  if (side) r=0xff, g=0x99, b=0x66;
+  else      r=0xff, g=0x66, b=0x66;
+  r = Math.round(r * k);
+  g = Math.round(g * k);
+  b = Math.round(b * k);
+  color = (r << 16) | (g << 8) | (b);
   return "#" + color.toString(16);
 }
 

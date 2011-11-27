@@ -176,18 +176,10 @@ function draw_line_wall(x, k) {
   if (size >= SIZE_Y / 2)
     size = SIZE_Y / 2;
 
-  var a = SIZE_Y / 2;
-  var j = a;
-  var i = a + (i == i);
-
-  while ((size--) > 0)
-  {
-    var color = getColor(k);
-    sheet.getRange(i, x + 1, 1, 1).setBackgroundColor("#" + color);
-    sheet.getRange(j, x + 1, 1, 1).setBackgroundColor("#" + color);
-    i++;
-    j--;
-  }
+  size = Math.round(size);
+  color = getColor(k);
+  sheet.getRange((SIZE_Y / 2), x + 1, size, 1).setBackgroundColor(color);
+  sheet.getRange((SIZE_Y / 2) - size, x + 1, size, 1).setBackgroundColor(color);
 }
 
 function Vector() {

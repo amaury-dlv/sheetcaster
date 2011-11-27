@@ -86,7 +86,7 @@ function initSheet_() {
   }
 
   if(SIZE_Y > sheet.getMaxRows()) {
-    sheet.insertRows(1, SIZE_Y - sheet.getMaxRows());
+    sheet.insertRows(2, SIZE_Y - sheet.getMaxRows());
   }
 
   if(SIZE_Y < sheet.getMaxRows()) {

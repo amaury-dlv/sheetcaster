@@ -143,21 +143,20 @@ function calc_inter(vec) {
 }
 
 function getColor(k) {
-    var color;
-    if (k < 1) {
-      color = "DDDDDD";
-    } else if (k < 2) {
-      color = "BBBBBB";
-    } else if (k < 4) {
-      color = "999999";
-    } else if (k < 6) {
-      color = "777777";
-    } else if (k < 8) {
-      color = "555555";
-    } else {
-      color = "000000";
-    }
-  return color;
+  Logger.log(k);
+    return [
+      "#BBBBBB",
+      "#AAAAAA",
+      "#999999",
+      "#888888",
+      "#777777",
+      "#666666",
+      "#555555",
+      "#444444",
+      "#333333",
+      "#222222",
+      "#111111",
+    ][Math.round(k)];
 }
 
 function draw_background(x) {

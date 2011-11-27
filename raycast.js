@@ -89,7 +89,7 @@ function initSheet_() {
   }
 
   if(SIZE_Y < sheet.getMaxRows()) {
-    sheet.deleteRows(1, sheet.getMaxRows() - SIZE_Y);
+    sheet.deleteRows(2, sheet.getMaxRows() - SIZE_Y - 1);
   }
 
   for(var row = 1; row <= SIZE_Y; row++) {

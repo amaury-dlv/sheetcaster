@@ -58,15 +58,15 @@ function left() {
 
 function up() {
   initPlayerFromSheet();
-  gX0 += Math.cos(gA);
-  gY0 += Math.sin(gA);
+  gX0 += Math.cos(gA) / 4;
+  gY0 += Math.sin(gA) / 4;
   raycast();
 }
 
 function down() {
   initPlayerFromSheet();
-  gX0 -= Math.cos(gA);
-  gY0 -= Math.sin(gA);
+  gX0 -= Math.cos(gA) / 4;
+  gY0 -= Math.sin(gA) / 4;
   raycast();
 }
 

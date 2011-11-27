@@ -13,11 +13,10 @@ function onOpen() {
   spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var subMenus = [
       {name:"Reset",functionName:"onOpen"},
-      {name:"Stop",functionName:"stop"},
-      {name:"Left",functionName:"left"},
-      {name:"Right",functionName:"right"},
-      {name:"Up",functionName:"up"},
-      {name:"Down",functionName:"down"}
+      {name:"Move forward",functionName:"up"},
+      {name:"Look left",functionName:"left"},
+      {name:"Look right",functionName:"right"},
+      {name:"Move backward",functionName:"down"},
   ];
   spreadsheet.addMenu("sheetcaster", subMenus);
 

@@ -71,8 +71,7 @@ function down() {
   raycast();
 }
 
-
-function start() {
+function initSheet() {
   var sheet = sheet = SpreadsheetApp.getActiveSheet();
 
   if(SIZE_X > sheet.getMaxColumns()) {

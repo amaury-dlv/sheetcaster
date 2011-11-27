@@ -160,13 +160,8 @@ function getColor(k) {
 }
 
 function draw_background(x) {
-
-  for (var cur = SIZE_X / 2; cur < SIZE_X; cur++) {
-    sheet.getRange(cur, x + 1, 1, 1).setBackgroundColor("#7F4DCC");
-  }
-  for (var cur = 1; cur < SIZE_X / 2; cur++) {
-    sheet.getRange(cur, x + 1, 1, 1).setBackgroundColor("#79F8F8");
-  }
+  sheet.getRange(1, 1, sheet.getMaxRows() / 2, sheet.getMaxColumns()).setBackgroundColor("#DEE6FF");
+  sheet.getRange(sheet.getMaxRows() / 2, 1, sheet.getMaxRows() / 2 + ((sheet.getMaxRows() + 1) % 2), sheet.getMaxColumns()).setBackgroundColor("#BBAB9E");
 }
 
 function draw_line_wall(x, k) {
@@ -204,12 +199,11 @@ function Vector() {
 function raycast() {
   sheet = SpreadsheetApp.getActiveSheet();
   var vec = new Vector();
+  draw_background(x);
   for (var x = 0; x < SIZE_X; x++) {
     calcul_wall(vec, x);
     var k = calc_inter(vec);
-    draw_background(x);
     draw_line_wall(x, k);
-    Logger.log("TEST " + x + " - " + k);
   }
   savePlayerToSheet();
 }

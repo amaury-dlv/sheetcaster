@@ -69,7 +69,7 @@ function start() {
     sheet.deleteRows(1, sheet.getMaxRows() - SIZE_Y);
   }
 
-  for(var row = 1; row <= SIZE_Y + 1; row++) {
+  for(var row = 1; row <= SIZE_Y; row++) {
     sheet.setRowHeight(row, 10);
   }
 

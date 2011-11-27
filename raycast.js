@@ -10,7 +10,7 @@ var sheet;
 function onOpen() {
   spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var subMenus = [
-      {name:"Begin",functionName:"raycast"},
+      {name:"Reset",functionName:"onOpen"},
       {name:"Stop",functionName:"stop"},
       {name:"Left",functionName:"left"},
       {name:"Right",functionName:"right"},

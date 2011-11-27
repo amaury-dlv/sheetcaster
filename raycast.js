@@ -26,15 +26,15 @@ function onOpen() {
 function right() {
   gA = gA - 0.25;
   if (gA < 0) {
-    gA = gA + 6.28;
+    gA = gA + (2 * Math.PI);
   }
   raycast();
 }
 
 function left() {
   gA = gA + 0.25;
-  if (gA > 6.28) {
-    gA = gA + 6.28;
+  if (gA > (2 * Math.PI)) {
+    gA = gA - (2 * Math.PI);
   } 
   raycast();
 }

@@ -173,19 +173,19 @@ function draw_background(x) {
 function draw_line_wall(x, k) {
   var size;
 
-  if (k == 0)
+  if (k <= 0)
     size = SIZE_Y;
   else
     size = SIZE_Y / (4 * k);
 
   if (size < 0)
     size = 0;
-  if (size > SIZE_Y)
-    size = SIZE_Y;
+  if (size >= SIZE_Y / 2)
+    size = SIZE_Y / 2;
 
   var a = SIZE_Y / 2;
   var j = a;
-  var i = a;
+  var i = a + (i == i);
 
   while ((size--) > 0)
   {

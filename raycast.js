@@ -212,5 +212,5 @@ function raycast() {
     draw_line_wall(x, k);
     Logger.log("TEST " + x + " - " + k);
   }
-  savePlayerToSheet()
+  savePlayerToSheet();
 }

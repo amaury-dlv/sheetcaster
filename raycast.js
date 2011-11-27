@@ -20,7 +20,7 @@ function onOpen() {
       {name:"Down",functionName:"down"}
   ];
   spreadsheet.addMenu("sheetcaster", subMenus);
-  
+
   sheet = SpreadsheetApp.getActiveSheet();
   initSheet();
   raycast();
@@ -53,7 +53,7 @@ function left() {
   gA = gA + 0.25;
   if (gA > (2 * Math.PI)) {
     gA = gA - (2 * Math.PI);
-  } 
+  }
   raycast();
 }
 
@@ -178,10 +178,12 @@ function draw_line_wall(x, k) {
     size = SIZE_Y;
   else
     size = SIZE_Y / (4 * k);
+
   if (size < 0)
     size = 0;
   if (size > SIZE_Y)
     size = SIZE_Y;
+
   var a = SIZE_Y / 2;
   var j = a;
   var i = a;
@@ -197,8 +199,8 @@ function draw_line_wall(x, k) {
 }
 
 function Vector() {
-  this.x = -0.7;
-  this.y = -0.7;
+  this.x = 0;
+  this.y = 1;
 }
 
 function raycast() {

@@ -1,12 +1,13 @@
+var SIZE_X = 64;
+var SIZE_Y = 64;
+var K_FOV = 1;
+
 var gX0 = 3;
 var gY0 = 6;
 var gA = 0.86;
 
-var SIZE_X = 64;
-var SIZE_Y = 64;
-var MID = Math.floor(SIZE_Y / 2);
-
 var STORE_LIN = SIZE_Y;
+var MID = Math.floor(SIZE_Y / 2);
 
 var sheet;
 
@@ -109,8 +110,8 @@ function computeWall_(vec, x) {
   var y1 = SIZE_X / 2;
   y1 = y1 - x;
   y1 = y1 / SIZE_X;
-  vec.x = 0.5 * cos - y1 * sin;
-  vec.y = 0.5 * sin + y1 * cos;
+  vec.x = 0.5 * cos - y1 * sin * K_FOV;
+  vec.y = 0.5 * sin + y1 * cos * K_FOV;
 }
 
 var side;

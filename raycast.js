@@ -69,12 +69,12 @@ function start() {
     sheet.deleteRows(1, sheet.getMaxRows() - SIZE_Y);
   }
 
-  for(var row = 1; row <= SIZE_Y; row++) {
-    sheet.setRowHeight(row, 20);
+  for(var row = 1; row <= SIZE_Y + 1; row++) {
+    sheet.setRowHeight(row, 10);
   }
 
   for(var col = 1; col <= SIZE_X; col++) {
-    sheet.setColumnWidth(col, 20);
+    sheet.setColumnWidth(col, 10);
   }
 
   sheet.clear();

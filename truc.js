@@ -139,6 +139,16 @@ function getColor(k) {
   return color;
 }
 
+function draw_background(x) {
+
+  for (var cur = SIZE_X / 2; cur < SIZE_X; cur++) {
+    sheet.getRange(cur, x + 1, 1, 1).setBackgroundColor("#7F4DCC");
+  }
+  for (var cur = 1; cur < SIZE_X / 2; cur++) {
+    sheet.getRange(cur, x + 1, 1, 1).setBackgroundColor("#79F8F8");
+  }
+}
+
 function draw_line_wall(x, k) {
   var size;
 
@@ -153,9 +163,6 @@ function draw_line_wall(x, k) {
   var a = SIZE_Y / 2;
   var j = a;
   var i = a;
-  for (var lin = 0; lin < SIZE_Y; lin++) {
-    sheet.getRange(lin + 1,x + 1,1,1).setBackgroundColor("#FFFFFF");
-  }
 
   while ((size--) > 0)
   {
@@ -178,6 +185,7 @@ function raycast() {
   for (var x = 0; x < SIZE_X; x++) {
     calcul_wall(vec, x);
     var k = calc_inter(vec);
+    draw_background(x);
     draw_line_wall(x, k);
     Logger.log("TEST " + x + " - " + k);
   }

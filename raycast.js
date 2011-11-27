@@ -180,7 +180,7 @@ function Vector() {
 }
 
 function raycast() {
-  onOpen();
+  sheet = SpreadsheetApp.getActiveSheet();
   var vec = new Vector();
   for (var x = 0; x < SIZE_X; x++) {
     calcul_wall(vec, x);

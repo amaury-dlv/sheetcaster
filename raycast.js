@@ -4,6 +4,7 @@ var gA = 0.86;
 
 var SIZE_X = 64;
 var SIZE_Y = 64;
+var MID = Math.floor(SIZE_Y / 2);
 
 var STORE_LIN = SIZE_Y;
 
@@ -142,8 +143,8 @@ function getWallDist_(vec) {
 }
 
 function drawBackground_() {
-  sheet.getRange(1, 1, sheet.getMaxRows() / 2, sheet.getMaxColumns()).setBackgroundColor("#DEE6FF");
-  sheet.getRange(sheet.getMaxRows() / 2, 1, sheet.getMaxRows() / 2 + ((sheet.getMaxRows() + 1) % 2), sheet.getMaxColumns()).setBackgroundColor("#BBAB9E");
+  sheet.getRange(1, 1, MID, SIZE_X).setBackgroundColor("#DEE6FF");
+  sheet.getRange(MID, 1, MID + !(SIZE_Y % 2), SIZE_X).setBackgroundColor("#33CC00");
 }
 
 function getColor_(k) {
@@ -156,20 +157,13 @@ function getColor_(k) {
 function drawWallX_(x, k) {
   var size;
 
-  if (k <= 0)
-    size = SIZE_Y;
-  else
-    size = SIZE_Y / (4 * k);
-
-  if (size < 0)
-    size = 0;
-  if (size >= SIZE_Y / 2)
-    size = SIZE_Y / 2;
+  size = (k <= 0 ? MID : SIZE_Y / (4*k));
+  size = Math.min(MID, Math.max(1, size));
 
   size = Math.round(size);
   color = getColor_(k);
-  sheet.getRange((SIZE_Y / 2), x + 1, size, 1).setBackgroundColor(color);
-  sheet.getRange((SIZE_Y / 2) - size, x + 1, size, 1).setBackgroundColor(color);
+  sheet.getRange(MID, x + 1, size, 1).setBackgroundColor(color);
+  sheet.getRange(Math.max(1, MID - size), x + 1, size, 1).setBackgroundColor(color);
 }
 
 function Vector_() {

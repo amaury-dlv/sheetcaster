@@ -28,22 +28,6 @@ function readMap_(x, y) {
   return (map[Math.round(y)][Math.round(x)]);
 }
 
-function Sheetcast() {
-  spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
-  var subMenus = [
-      {name:"Reset",functionName:"Sheetcast"},
-      {name:"Move forward",functionName:"up_"},
-      {name:"Look left",functionName:"left_"},
-      {name:"Look right",functionName:"right_"},
-      {name:"Move backward",functionName:"down_"},
-  ];
-  spreadsheet.addMenu("Sheetcaster", subMenus);
-
-  sheet = SpreadsheetApp.getActiveSheet();
-  initSheet_();
-  raycast_();
-}
-
 function savePlayerToSheet_() {
   sheet.getRange(STORE_LIN, 1, 1, 1).setValue(gX0);
   sheet.getRange(STORE_LIN, 2, 1, 1).setValue(gY0);
@@ -174,7 +158,7 @@ function drawWallX_(x, k) {
 
   size = Math.round(size);
   color = getColor_(k);
-  sheet.getRange(MID, x + 1, size, 1).setBackgroundColor(color);
+  sheet.getRange(MID, x + 1, size + 1, 1).setBackgroundColor(color);
   sheet.getRange(Math.max(1, MID - size), x + 1, size, 1).setBackgroundColor(color);
 }
 
@@ -193,4 +177,20 @@ function raycast_() {
     drawWallX_(x, k);
   }
   savePlayerToSheet_();
+}
+
+function onOpen() {
+  spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  var subMenus = [
+      {name:"Reset",functionName:"onOpen"},
+      {name:"Move forward",functionName:"up_"},
+      {name:"Look left",functionName:"left_"},
+      {name:"Look right",functionName:"right_"},
+      {name:"Move backward",functionName:"down_"},
+  ];
+  spreadsheet.addMenu("Sheetcaster", subMenus);
+
+  sheet = SpreadsheetApp.getActiveSheet();
+  initSheet_();
+  raycast_();
 }

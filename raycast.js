@@ -5,6 +5,8 @@ var gA = 0.86;
 var SIZE_X = 64;
 var SIZE_Y = 64;
 
+var STORE_LIN = SIZE_Y;
+
 var sheet;
 
 function onOpen() {
@@ -20,10 +22,25 @@ function onOpen() {
   spreadsheet.addMenu("sheetcaster", subMenus);
   
   sheet = SpreadsheetApp.getActiveSheet();
-  start();
+  initSheet();
+  raycast();
+}
+
+function savePlayerToSheet() {
+  sheet.getRange(STORE_LIN, 1, 1, 1).setValue(gX0);
+  sheet.getRange(STORE_LIN, 2, 1, 1).setValue(gY0);
+  sheet.getRange(STORE_LIN, 3, 1, 1).setValue(gA);
+}
+
+function initPlayerFromSheet() {
+  var sheet = SpreadsheetApp.getActiveSheet();
+  gX0 = sheet.getRange(STORE_LIN, 1, 1, 1).getValue();
+  gY0 = sheet.getRange(STORE_LIN, 2, 1, 1).getValue();
+  gA = sheet.getRange(STORE_LIN, 3, 1, 1).getValue();
 }
 
 function right() {
+  initPlayerFromSheet();
   gA = gA - 0.25;
   if (gA < 0) {
     gA = gA + (2 * Math.PI);
@@ -32,6 +49,7 @@ function right() {
 }
 
 function left() {
+  initPlayerFromSheet();
   gA = gA + 0.25;
   if (gA > (2 * Math.PI)) {
     gA = gA - (2 * Math.PI);
@@ -46,6 +64,7 @@ function up() {
 
 function down() {
   gY0  = gY0 - 1;
+  initPlayerFromSheet();
   raycast();
 }
 
@@ -189,5 +208,5 @@ function raycast() {
     draw_line_wall(x, k);
     Logger.log("TEST " + x + " - " + k);
   }
+  savePlayerToSheet()
 }
-

@@ -9,6 +9,12 @@ var gA = 0.86;
 var STORE_LIN = SIZE_Y;
 var MID = Math.floor(SIZE_Y / 2);
 
+var UPPER_BG_COLOR = 0xDEE6FF;
+var LOWER_BG_COLOR = 0x33CC00;
+
+var colors = new Array(SIZE_X);
+var sizes = new Array(SIZE_X);
+
 var sheet;
 
 var map =
@@ -135,8 +141,62 @@ function getWallDist_(vec) {
 }
 
 function drawBackground_() {
-  sheet.getRange(1, 1, MID, SIZE_X).setBackgroundColor("#DEE6FF");
-  sheet.getRange(MID, 1, MID + !(SIZE_Y % 2), SIZE_X).setBackgroundColor("#33CC00");
+  sheet.getRange(1, 1, MID, SIZE_X).setBackgroundColor("#" + UPPER_BG_COLOR.toString(16));
+  sheet.getRange(MID, 1, MID + !(SIZE_Y % 2), SIZE_X).setBackgroundColor("#" + LOWER_BG_COLOR.toString(16));
+}
+
+var isSizeDecreasing;
+var runLength;
+function smoothenColors_(x) {
+  var sizeDecrease = (sizes[x] < sizes[x - 1]);
+  
+  var decrement = 1 / (runLength + 1);
+  var blendIntensity = 1 - decrement;
+
+  if (sizeDecrease) {
+    var decrement = -decrement;
+    var blendIntensity = -decrement;
+  }
+
+  x = x - 1;
+  var col = x;
+  while (col > x - runLength) {
+    var size = sizes[col];
+    var color = colors[col];
+
+    var upperR = ((color >> 16) & 0xFF) * blendIntensity;
+    upperR += (1 - blendIntensity) * ((UPPER_BG_COLOR >> 16) & 0xFF);
+    upperR &= 0xFF;
+    var upperG = ((color >> 8) & 0xFF) * blendIntensity;
+    upperG += (1 - blendIntensity) * ((UPPER_BG_COLOR >> 8) & 0xFF);
+    upperG &= 0xFF;
+    var upperB = (color & 0xFF) * blendIntensity;
+    upperB += (1 - blendIntensity) * (UPPER_BG_COLOR & 0xFF);
+    upperB &= 0xFF;
+
+    var lowerR = ((color >> 16) & 0xFF) * blendIntensity;
+    lowerR += (1 - blendIntensity) * ((LOWER_BG_COLOR >> 16) & 0xFF);
+    lowerR &= 0xFF;
+    var lowerG = ((color >> 8) & 0xFF) * blendIntensity;
+    lowerG += (1 - blendIntensity) * ((LOWER_BG_COLOR >> 8) & 0xFF);
+    lowerG &= 0xFF;
+    var lowerB = (color & 0xFF) * blendIntensity;
+    lowerB += (1 - blendIntensity) * (LOWER_BG_COLOR & 0xFF);
+    lowerB &= 0xFF;
+    
+    var upperColor = (upperR << 16) | (upperG << 8) | upperB;
+    var lowerColor = (lowerR << 16) | (lowerG << 8) | lowerB;
+    
+    sheet.getRange(Math.max(1, MID - size), col + 1, 1, 1).setBackgroundColor("#" + upperColor.toString(16));
+    sheet.getRange(Math.min(SIZE_Y, MID + size), col + 1, 1, 1).setBackgroundColor("#" + lowerColor.toString(16));
+    col -= 1;
+    
+    blendIntensity -= decrement;
+    if (blendIntensity < 0) {
+      blendIntensity = 0;
+    }
+    
+  }
 }
 
 function getColor_(k) {
@@ -148,7 +208,7 @@ function getColor_(k) {
   g = Math.round(g * k);
   b = Math.round(b * k);
   color = (r << 16) | (g << 8) | (b);
-  return "#" + color.toString(16);
+  return color;
 }
 
 function drawWallX_(x, k) {
@@ -158,9 +218,30 @@ function drawWallX_(x, k) {
   size = Math.min(MID, Math.max(1, size));
 
   size = Math.round(size);
+  sizes[x] = size;
+
   color = getColor_(k);
-  sheet.getRange(MID, x + 1, size + 1, 1).setBackgroundColor(color);
-  sheet.getRange(Math.max(1, MID - size), x + 1, size, 1).setBackgroundColor(color);
+  colors[x] = color;
+
+  sheet.getRange(MID, x + 1, size + 1, 1).setBackgroundColor("#" + color.toString(16));
+  sheet.getRange(Math.max(1, MID - size), x + 1, size, 1).setBackgroundColor("#" + color.toString(16));
+
+  if (x > 1) {
+    var sizeDecrease = (size < sizes[x - 1]);
+    var invalid = (sizeDecrease != isSizeDecreasing);
+
+    if (!invalid && size == sizes[x - 1]) {
+      runLength += 1;
+    } else {
+      smoothenColors_(x);
+      runLength = 1;
+    }
+    isSizeDecreasing = sizeDecrease;
+
+  } else {
+    runLengh = 1;
+    isSizeDecreasing = false;
+  }
 }
 
 function Vector_() {

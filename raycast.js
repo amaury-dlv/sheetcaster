@@ -149,7 +149,7 @@ var isSizeDecreasing;
 var runLength;
 function smoothenColors_(x) {
   var sizeDecrease = (sizes[x] < sizes[x - 1]);
-  
+
   var decrement = 1 / (runLength + 1);
   var blendIntensity = 1 - decrement;
 
@@ -183,19 +183,19 @@ function smoothenColors_(x) {
     var lowerB = (color & 0xFF) * blendIntensity;
     lowerB += (1 - blendIntensity) * (LOWER_BG_COLOR & 0xFF);
     lowerB &= 0xFF;
-    
+
     var upperColor = (upperR << 16) | (upperG << 8) | upperB;
     var lowerColor = (lowerR << 16) | (lowerG << 8) | lowerB;
-    
+
     sheet.getRange(Math.max(1, MID - size), col + 1, 1, 1).setBackgroundColor("#" + upperColor.toString(16));
     sheet.getRange(Math.min(SIZE_Y, MID + size), col + 1, 1, 1).setBackgroundColor("#" + lowerColor.toString(16));
     col -= 1;
-    
+
     blendIntensity -= decrement;
     if (blendIntensity < 0) {
       blendIntensity = 0;
     }
-    
+
   }
 }
 

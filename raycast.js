@@ -37,10 +37,13 @@ function readMap_(x, y) {
 
 function getMapFromSheet_() {
     var sheet = SpreadsheetApp.getActiveSheet();
+    var tmp;
 
     for (var line = 1; line <= 10; line++) {
 	for (var col = 1; col <= 10; col++) {
-            map[line - 1][col - 1] = sheet.getRange(line, col, 1, 1).getValue();
+            tmp = sheet.getRange(line, col, 1, 1).getValue();
+	    if (tmp)
+		map[line - 1][col - 1] = tmp;
 	}
     }
 }

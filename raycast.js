@@ -67,6 +67,11 @@ function initPlayerFromSheet_() {
   gA = sheet.getRange(STORE_LIN, 3, 1, 1).getValue();
 }
 
+function refresh_() {
+  initMapFromSheet_();
+  raycast_();
+}
+
 function right_() {
   initMapFromSheet_();
   gA = gA - 0.25;
@@ -284,6 +289,7 @@ function onOpen() {
   spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var subMenus = [
       {name:"Reset",functionName:"onOpen"},
+      {name:"Refresh",functionName:"refresh_"},
       {name:"Move forward",functionName:"up_"},
       {name:"Look left",functionName:"left_"},
       {name:"Look right",functionName:"right_"},

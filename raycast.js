@@ -16,6 +16,7 @@ var colors = new Array(SIZE_X);
 var sizes = new Array(SIZE_X);
 
 var sheet;
+var side;
 
 var map =
   [
@@ -31,8 +32,13 @@ var map =
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
   ];
 
-function readMap_(x, y) {
-  return (map[Math.round(y)][Math.round(x)]);
+function Vector(x, y) {
+  this.x = x;
+  this.y = y;
+}
+
+function readMap_(y, x) {
+  return (map[Math.floor(y)][Math.floor(x)]);
 }
 
 function getMapFromSheet_() {
@@ -132,36 +138,6 @@ function initSheet_() {
   }
 
   sheet.clear();
-}
-
-function computeWall_(vec, x) {
-  var cos = Math.cos(gA);
-  var sin = Math.sin(gA);
-  var y1 = SIZE_X / 2;
-  y1 = y1 - x;
-  y1 = y1 / SIZE_X;
-  vec.x = 0.5 * cos - y1 * sin * K_FOV;
-  vec.y = 0.5 * sin + y1 * cos * K_FOV;
-}
-
-var side;
-function getWallDist_(vec) {
-  var x = gX0;
-  var y = gY0;
-  var k = 0;
-
-  while (Math.round(readMap_(y, x)) != 1 && k < 10) {
-    x = gX0 + k * vec.x;
-    y = gY0 + k * vec.y;
-    k = k + 0.01;
-  }
-
-  side = 0;
-  if (Math.min(Math.abs(x - Math.floor(x)), Math.abs(x - Math.ceil(x))) <
-      Math.min(Math.abs(y - Math.floor(y)), Math.abs(y - Math.ceil(y))))
-  side = 1;
-
-  return (k);
 }
 
 function drawBackground_() {
@@ -268,18 +244,76 @@ function drawWallX_(x, k) {
   }
 }
 
-function Vector_() {
-  this.x = 0;
-  this.y = 1;
+function getRay(x) {
+  var cos = Math.cos(gA);
+  var sin = Math.sin(gA);
+  var y1 = SIZE_X / 2;
+
+  y1 = y1 - x;
+  y1 = y1 / SIZE_X;
+
+  return new Vector(
+    cos / 2 - y1 * sin * K_FOV,
+    sin / 2 + y1 * cos * K_FOV
+  );
+}
+
+function castRay(mapCoord, delta, dist, step) {
+  var hit = 0;
+
+  while (!hit) {
+    if (dist.x < dist.y) {
+      dist.x      += delta.x;
+      mapCoord.x  += step.x;
+      hit = readMap_(mapCoord.x, mapCoord.y) * 1;
+    } else {
+      dist.y     += delta.y;
+      mapCoord.y += step.y;
+      hit = readMap_(mapCoord.x, mapCoord.y) * 2;
+    }
+  }
+  return side = hit - 1;
+}
+
+function getWallHeight(ray) {
+  var mapCoord = new Vector(
+      Math.floor(gX0),
+      Math.floor(gY0)
+  );
+
+  var delta = new Vector(
+      Math.sqrt(1. + (ray.y * ray.y) / (ray.x * ray.x)),
+      Math.sqrt(1. + (ray.x * ray.x) / (ray.y * ray.y))
+  );
+
+  var dist = new Vector(
+      delta.x * (gX0 - mapCoord.x), // Distance from next hit on the x axis
+      delta.y * (gY0 - mapCoord.y)  // Distance from next hit on the y axis
+  );
+
+  var step = new Vector(
+      Math.floor(1 - 2 * (ray.x < 0)),
+      Math.floor(1 - 2 * (ray.y < 0))
+  );
+
+  if (ray.x >= 0) dist.x = delta.x - dist.x;
+  if (ray.y >= 0) dist.y = delta.y - dist.y;
+
+  var ret = castRay(mapCoord, delta, dist, step);
+
+  if (ret) {
+    return Math.abs((mapCoord.y - gY0 + (1. - step.y) / 2.) / ray.y);
+  } else {
+    return Math.abs((mapCoord.x - gX0 + (1. - step.x) / 2.) / ray.x);
+  }
 }
 
 function raycast_() {
   sheet = SpreadsheetApp.getActiveSheet();
-  var vec = new Vector_();
   drawBackground_();
   for (var x = 0; x < SIZE_X; x++) {
-    computeWall_(vec, x);
-    var k = getWallDist_(vec);
+    ray = getRay(x);
+    var k = getWallHeight(ray);
     drawWallX_(x, k);
   }
   savePlayerToSheet_();

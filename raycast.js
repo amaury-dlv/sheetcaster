@@ -35,10 +35,26 @@ function readMap_(x, y) {
   return (map[Math.round(y)][Math.round(x)]);
 }
 
+function getMapFromSheet_() {
+    var sheet = SpreadsheetApp.getActiveSheet();
+
+    for (var line = 1; line <= 10; line++) {
+	for (var col = 1; col <= 10; col++) {
+            map[line - 1][col - 1] = sheet.getRange(line, col, 1, 1).getValue();
+	}
+    }
+}
+
 function savePlayerToSheet_() {
   sheet.getRange(STORE_LIN, 1, 1, 1).setValue(gX0);
   sheet.getRange(STORE_LIN, 2, 1, 1).setValue(gY0);
   sheet.getRange(STORE_LIN, 3, 1, 1).setValue(gA);
+}
+
+function initMapFromSheet_() {
+
+  getMapFromSheet_();
+  initPlayerFromSheet_();
 }
 
 function initPlayerFromSheet_() {
@@ -49,7 +65,7 @@ function initPlayerFromSheet_() {
 }
 
 function right_() {
-  initPlayerFromSheet_();
+  initMapFromSheet_();
   gA = gA - 0.25;
   if (gA < 0) {
     gA += (2 * Math.PI);
@@ -58,7 +74,7 @@ function right_() {
 }
 
 function left_() {
-  initPlayerFromSheet_();
+  initMapFromSheet_();
   gA = gA + 0.25;
   if (gA > (2 * Math.PI)) {
     gA -= (2 * Math.PI);
@@ -67,14 +83,14 @@ function left_() {
 }
 
 function up_() {
-  initPlayerFromSheet_();
+  initMapFromSheet_();
   gX0 += Math.cos(gA) / 4;
   gY0 += Math.sin(gA) / 4;
   raycast_();
 }
 
 function down_() {
-  initPlayerFromSheet_();
+  initMapFromSheet_();
   gX0 -= Math.cos(gA) / 4;
   gY0 -= Math.sin(gA) / 4;
   raycast_();

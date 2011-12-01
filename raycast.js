@@ -42,6 +42,7 @@ function readMap_(y, x) {
   return (map[Math.floor(y)][Math.floor(x)]);
 }
 
+// Retrieve the map from the upper-left corner
 function getMapFromSheet_() {
     var sheet = SpreadsheetApp.getActiveSheet();
     var tmp;
@@ -55,6 +56,7 @@ function getMapFromSheet_() {
     }
 }
 
+// The player state has to be saved between each frame
 function savePlayerToSheet_() {
   sheet.getRange(STORE_LIN, 1, 1, 1).setValue(gX0);
   sheet.getRange(STORE_LIN, 2, 1, 1).setValue(gY0);
@@ -211,7 +213,7 @@ function getColor_(k) {
   return color;
 }
 
-// Draw a screen column
+// Given a column and the wall distance, draw the column
 function drawWallX_(x, k) {
   var size;
 
@@ -238,7 +240,6 @@ function drawWallX_(x, k) {
       runLength = 1;
     }
     isSizeDecreasing = sizeDecrease;
-
   } else {
     runLengh = 1;
     isSizeDecreasing = false;
@@ -277,7 +278,8 @@ function castRay_(mapCoord, delta, dist, step) {
   return side = hit - 1;
 }
 
-function getWallHeight_(ray) {
+// Returns the distance of the first ray/wall intersection
+function getWallDist_(ray) {
 
   var mapCoord = new Vector(
       Math.floor(gX0),
@@ -296,14 +298,14 @@ function getWallHeight_(ray) {
       delta.y * (gY0 - mapCoord.y)
   );
 
+  if (ray.x >= 0) dist.x = delta.x - dist.x;
+  if (ray.y >= 0) dist.y = delta.y - dist.y;
+
   // Direction of the ray (-1 or 1 for each axis)
   var step = new Vector(
       Math.floor(1 - 2 * (ray.x < 0)),
       Math.floor(1 - 2 * (ray.y < 0))
   );
-
-  if (ray.x >= 0) dist.x = delta.x - dist.x;
-  if (ray.y >= 0) dist.y = delta.y - dist.y;
 
   if (castRay(mapCoord, delta, dist, step)) { // Depending on the axis of the hit
     return Math.abs((mapCoord.y - gY0 + (1. - step.y) / 2.) / ray.y);
@@ -320,7 +322,7 @@ function raycast_() {
     var k = getWallHeight(ray);
     drawWallX_(x, k);
   }
-  savePlayerToSheet_();
+  savePlayerToSheet_(); // So it can be retrieved a the next frame
 }
 
 function onOpen() {

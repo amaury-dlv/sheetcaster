@@ -1,10 +1,10 @@
-var SIZE_X = 64;
+var SIZE_X = 128;
 var SIZE_Y = 64;
-var K_FOV = 1; // Increase to widen the view
+var K_FOV = 2; // Increase to widen the view
 
-var gX0 = 3;
-var gY0 = 6;
-var gA = 0.86; // Direction the player is watching
+var gX0 = 3.7;
+var gY0 = 6.7;
+var gA = 0.36; // Direction the player is facing
 
 var STORE_LIN = SIZE_Y; // Where we store the player state between each frame
 var MID = Math.floor(SIZE_Y / 2);

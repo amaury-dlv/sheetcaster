@@ -33,6 +33,8 @@ var map =
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
   ];
 
+var screen;
+
 function Vector_(x, y) {
   this.x = x;
   this.y = y;
@@ -40,6 +42,17 @@ function Vector_(x, y) {
 
 function readMap_(y, x) {
   return (map[Math.floor(y)][Math.floor(x)]);
+}
+
+function initScreen_() {
+  screen = new Array(SIZE_Y);
+  for (var lin = 0; lin < SIZE_Y; lin++) {
+    screen[lin] = new Array(SIZE_X);
+    for (var col = 0; col < SIZE_X; col++) {
+      screen[lin][col] = "#" + ((lin < MID) ? UPPER_BG_COLOR
+                                : LOWER_BG_COLOR).toString(16);
+    }
+  }
 }
 
 // Retrieve the map from the upper-left corner
@@ -142,14 +155,10 @@ function initSheet_() {
   sheet.clear();
 }
 
-function drawBackground_() {
-  sheet.getRange(1, 1, MID, SIZE_X).setBackgroundColor("#" + UPPER_BG_COLOR.toString(16));
-  sheet.getRange(MID, 1, MID + !(SIZE_Y % 2), SIZE_X).setBackgroundColor("#" + LOWER_BG_COLOR.toString(16));
-}
-
 var isSizeDecreasing;
 var runLength;
 function smoothenColors_(x) {
+  return;
   var sizeDecrease = (sizes[x] < sizes[x - 1]);
 
   var decrement = 1 / (runLength + 1);
@@ -162,7 +171,7 @@ function smoothenColors_(x) {
 
   x = x - 1;
   var col = x;
-  while (col > x - runLength) {
+  for (var col = x; col > x - runLength; col--) {
     var size = sizes[col];
     var color = colors[col];
 
@@ -189,9 +198,8 @@ function smoothenColors_(x) {
     var upperColor = (upperR << 16) | (upperG << 8) | upperB;
     var lowerColor = (lowerR << 16) | (lowerG << 8) | lowerB;
 
-    sheet.getRange(Math.max(1, MID - size), col + 1, 1, 1).setBackgroundColor("#" + upperColor.toString(16));
-    sheet.getRange(Math.min(SIZE_Y, MID + size), col + 1, 1, 1).setBackgroundColor("#" + lowerColor.toString(16));
-    col -= 1;
+    screen[MID - size][col] = "#" + upperColor.toString(16);
+    screen[MID + size][col] = "#" + lowerColor.toString(16);
 
     blendIntensity -= decrement;
     if (blendIntensity < 0) {
@@ -226,8 +234,9 @@ function drawWallX_(x, k) {
   color = getColor_(k);
   colors[x] = color;
 
-  sheet.getRange(MID, x + 1, size + 1, 1).setBackgroundColor("#" + color.toString(16));
-  sheet.getRange(Math.max(1, MID - size), x + 1, size, 1).setBackgroundColor("#" + color.toString(16));
+  for (var lin = 0; lin < SIZE_Y; lin++)
+    if (lin > MID - size && lin < MID + size)
+      screen[lin][x] = "#" + color.toString(16);
 
   if (x > 1) {
     var sizeDecrease = (size < sizes[x - 1]);
@@ -315,13 +324,14 @@ function getWallDist_(ray) {
 }
 
 function raycast_() {
+  initScreen_();
   sheet = SpreadsheetApp.getActiveSheet();
-  drawBackground_();
   for (var x = 0; x < SIZE_X; x++) { // Iterate on each screen column
-    ray = getRay(x);
-    var k = getWallHeight(ray);
+    ray = getRay_(x);
+    var k = getWallDist_(ray);
     drawWallX_(x, k);
   }
+  sheet.getRange(1, 1, SIZE_Y, SIZE_X).setBackgroundColors(screen)
   savePlayerToSheet_(); // So it can be retrieved a the next frame
 }
 

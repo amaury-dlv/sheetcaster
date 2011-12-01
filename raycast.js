@@ -1,12 +1,12 @@
 var SIZE_X = 64;
 var SIZE_Y = 64;
-var K_FOV = 1;
+var K_FOV = 1; // Increase to widen the view
 
 var gX0 = 3;
 var gY0 = 6;
-var gA = 0.86;
+var gA = 0.86; // Direction the player is watching
 
-var STORE_LIN = SIZE_Y;
+var STORE_LIN = SIZE_Y; // Where we store the player state between each frame
 var MID = Math.floor(SIZE_Y / 2);
 
 var UPPER_BG_COLOR = 0xDEE6FF;
@@ -18,6 +18,7 @@ var sizes = new Array(SIZE_X);
 var sheet;
 var side;
 
+// 10x10 map
 var map =
   [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -32,7 +33,7 @@ var map =
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
   ];
 
-function Vector(x, y) {
+function Vector_(x, y) {
   this.x = x;
   this.y = y;
 }
@@ -61,7 +62,6 @@ function savePlayerToSheet_() {
 }
 
 function initMapFromSheet_() {
-
   getMapFromSheet_();
   initPlayerFromSheet_();
 }
@@ -98,15 +98,15 @@ function left_() {
 
 function up_() {
   initMapFromSheet_();
-  gX0 += Math.cos(gA) / 4;
-  gY0 += Math.sin(gA) / 4;
+  gX0 += Math.cos(gA) / 2;
+  gY0 += Math.sin(gA) / 2;
   raycast_();
 }
 
 function down_() {
   initMapFromSheet_();
-  gX0 -= Math.cos(gA) / 4;
-  gY0 -= Math.sin(gA) / 4;
+  gX0 -= Math.cos(gA) / 2;
+  gY0 -= Math.sin(gA) / 2;
   raycast_();
 }
 
@@ -126,7 +126,7 @@ function initSheet_() {
   }
 
   if(SIZE_Y < sheet.getMaxRows()) {
-    sheet.deleteRows(2, sheet.getMaxRows() - SIZE_Y - 1);
+    sheet.deleteRows(2, sheet.getMaxRows() - SIZE_Y + 1);
   }
 
   for(var row = 1; row <= SIZE_Y; row++) {
@@ -211,6 +211,7 @@ function getColor_(k) {
   return color;
 }
 
+// Draw a screen column
 function drawWallX_(x, k) {
   var size;
 
@@ -244,6 +245,7 @@ function drawWallX_(x, k) {
   }
 }
 
+// Given a value on the x axis (screen column), return the ray that will be cast
 function getRay(x) {
   var cos = Math.cos(gA);
   var sin = Math.sin(gA);
@@ -258,15 +260,15 @@ function getRay(x) {
   );
 }
 
-function castRay(mapCoord, delta, dist, step) {
+function castRay_(mapCoord, delta, dist, step) {
   var hit = 0;
 
   while (!hit) {
-    if (dist.x < dist.y) {
+    if (dist.x < dist.y) { // Next potential wall is on the x axis
       dist.x      += delta.x;
       mapCoord.x  += step.x;
       hit = readMap_(mapCoord.x, mapCoord.y) * 1;
-    } else {
+    } else { // Next potential wall is on the y axis
       dist.y     += delta.y;
       mapCoord.y += step.y;
       hit = readMap_(mapCoord.x, mapCoord.y) * 2;
@@ -275,22 +277,26 @@ function castRay(mapCoord, delta, dist, step) {
   return side = hit - 1;
 }
 
-function getWallHeight(ray) {
+function getWallHeight_(ray) {
+
   var mapCoord = new Vector(
       Math.floor(gX0),
       Math.floor(gY0)
   );
 
+  // How much to advance per step
   var delta = new Vector(
       Math.sqrt(1. + (ray.y * ray.y) / (ray.x * ray.x)),
       Math.sqrt(1. + (ray.x * ray.x) / (ray.y * ray.y))
   );
 
+  // Distance from next hit on each axis
   var dist = new Vector(
-      delta.x * (gX0 - mapCoord.x), // Distance from next hit on the x axis
-      delta.y * (gY0 - mapCoord.y)  // Distance from next hit on the y axis
+      delta.x * (gX0 - mapCoord.x),
+      delta.y * (gY0 - mapCoord.y)
   );
 
+  // Direction of the ray (-1 or 1 for each axis)
   var step = new Vector(
       Math.floor(1 - 2 * (ray.x < 0)),
       Math.floor(1 - 2 * (ray.y < 0))
@@ -299,9 +305,7 @@ function getWallHeight(ray) {
   if (ray.x >= 0) dist.x = delta.x - dist.x;
   if (ray.y >= 0) dist.y = delta.y - dist.y;
 
-  var ret = castRay(mapCoord, delta, dist, step);
-
-  if (ret) {
+  if (castRay(mapCoord, delta, dist, step)) { // Depending on the axis of the hit
     return Math.abs((mapCoord.y - gY0 + (1. - step.y) / 2.) / ray.y);
   } else {
     return Math.abs((mapCoord.x - gX0 + (1. - step.x) / 2.) / ray.x);
@@ -311,7 +315,7 @@ function getWallHeight(ray) {
 function raycast_() {
   sheet = SpreadsheetApp.getActiveSheet();
   drawBackground_();
-  for (var x = 0; x < SIZE_X; x++) {
+  for (var x = 0; x < SIZE_X; x++) { // Iterate on each screen column
     ray = getRay(x);
     var k = getWallHeight(ray);
     drawWallX_(x, k);

@@ -93,7 +93,7 @@ function refresh_() {
   raycast_();
 }
 
-function right_() {
+function right() {
   initMapFromSheet_();
   gA = gA - 0.25;
   if (gA < 0) {
@@ -102,7 +102,7 @@ function right_() {
   raycast_();
 }
 
-function left_() {
+function left() {
   initMapFromSheet_();
   gA = gA + 0.25;
   if (gA > (2 * Math.PI)) {
@@ -111,21 +111,21 @@ function left_() {
   raycast_();
 }
 
-function up_() {
+function up() {
   initMapFromSheet_();
   gX0 += Math.cos(gA) / 2;
   gY0 += Math.sin(gA) / 2;
   raycast_();
 }
 
-function down_() {
+function down() {
   initMapFromSheet_();
   gX0 -= Math.cos(gA) / 2;
   gY0 -= Math.sin(gA) / 2;
   raycast_();
 }
 
-function initSheet_() {
+function initSheet() {
   var sheet = sheet = SpreadsheetApp.getActiveSheet();
 
   if(SIZE_X > sheet.getMaxColumns()) {
@@ -256,7 +256,7 @@ function drawWallX_(x, k) {
 }
 
 // Given a value on the x axis (screen column), return the ray that will be cast
-function getRay(x) {
+function getRay_(x) {
   var cos = Math.cos(gA);
   var sin = Math.sin(gA);
   var y1 = SIZE_X / 2;
@@ -264,7 +264,7 @@ function getRay(x) {
   y1 = y1 - x;
   y1 = y1 / SIZE_X;
 
-  return new Vector(
+  return new Vector_(
     cos / 2 - y1 * sin * K_FOV,
     sin / 2 + y1 * cos * K_FOV
   );
@@ -290,19 +290,19 @@ function castRay_(mapCoord, delta, dist, step) {
 // Returns the distance of the first ray/wall intersection
 function getWallDist_(ray) {
 
-  var mapCoord = new Vector(
+  var mapCoord = new Vector_(
       Math.floor(gX0),
       Math.floor(gY0)
   );
 
   // How much to advance per step
-  var delta = new Vector(
+  var delta = new Vector_(
       Math.sqrt(1. + (ray.y * ray.y) / (ray.x * ray.x)),
       Math.sqrt(1. + (ray.x * ray.x) / (ray.y * ray.y))
   );
 
   // Distance from next hit on each axis
-  var dist = new Vector(
+  var dist = new Vector_(
       delta.x * (gX0 - mapCoord.x),
       delta.y * (gY0 - mapCoord.y)
   );
@@ -311,12 +311,12 @@ function getWallDist_(ray) {
   if (ray.y >= 0) dist.y = delta.y - dist.y;
 
   // Direction of the ray (-1 or 1 for each axis)
-  var step = new Vector(
+  var step = new Vector_(
       Math.floor(1 - 2 * (ray.x < 0)),
       Math.floor(1 - 2 * (ray.y < 0))
   );
 
-  if (castRay(mapCoord, delta, dist, step)) { // Depending on the axis of the hit
+  if (castRay_(mapCoord, delta, dist, step)) { // Depending on the axis of the hit
     return Math.abs((mapCoord.y - gY0 + (1. - step.y) / 2.) / ray.y);
   } else {
     return Math.abs((mapCoord.x - gX0 + (1. - step.x) / 2.) / ray.x);
@@ -340,14 +340,14 @@ function onOpen() {
   var subMenus = [
       {name:"Reset",functionName:"onOpen"},
       {name:"Refresh",functionName:"refresh_"},
-      {name:"Move forward",functionName:"up_"},
-      {name:"Look left",functionName:"left_"},
-      {name:"Look right",functionName:"right_"},
-      {name:"Move backward",functionName:"down_"},
+      {name:"Move forward",functionName:"up"},
+      {name:"Look left",functionName:"left"},
+      {name:"Look right",functionName:"right"},
+      {name:"Move backward",functionName:"down"},
   ];
   spreadsheet.addMenu("Sheetcaster", subMenus);
 
   sheet = SpreadsheetApp.getActiveSheet();
-  initSheet_();
+  initSheet();
   raycast_();
 }

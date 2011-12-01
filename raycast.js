@@ -2,9 +2,9 @@ var SIZE_X = 128;
 var SIZE_Y = 64;
 var K_FOV = 2; // Increase to widen the view
 
-var gX0 = 3.7;
-var gY0 = 6.7;
-var gA = 0.36; // Direction the player is facing
+var gX0 = 3.2;
+var gY0 = 7.9;
+var gA = 5.6; // Direction the player is facing
 
 var STORE_LIN = SIZE_Y; // Where we store the player state between each frame
 var MID = Math.floor(SIZE_Y / 2);
@@ -329,6 +329,7 @@ function raycast_() {
   for (var x = 0; x < SIZE_X; x++) { // Iterate on each screen column
     ray = getRay_(x);
     var k = getWallDist_(ray);
+    k /= 2; // Hack to get the map look smaller
     drawWallX_(x, k);
   }
   sheet.getRange(1, 1, SIZE_Y, SIZE_X).setBackgroundColors(screen)

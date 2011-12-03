@@ -155,52 +155,77 @@ function initSheet() {
   sheet.clear();
 }
 
-var isSizeDecreasing;
-var runLength;
-function smoothenColors_(x) {
-  return;
-  var sizeDecrease = (sizes[x] < sizes[x - 1]);
+function blend_(from, to, ratio) {
+  var r = ((from >> 16) & 0xFF) * ratio;
+  r += (1 - ratio) * ((to >> 16) & 0xFF);
+  r &= 0xFF;
+  var g = ((from >> 8) & 0xFF) * ratio;
+  g += (1 - ratio) * ((to >> 8) & 0xFF);
+  g &= 0xFF;
+  var b = (from & 0xFF) * ratio;
+  b += (1 - ratio) * (to & 0xFF);
+  b &= 0xFF;
+  
+  return (r << 16) | (g << 8) | b;
+}
 
+var wasSizeDecreasing;
+var runLength;
+function smoothenColors_(x, sizeDecrease) {
   var decrement = 1 / (runLength + 1);
+
+  if (runLength < 5) {
+    /*
+     * highly subjective "enhancement":
+     * This simply makes the AA less noticeable
+     * for really short runs, because we do not
+     * really want to bolden the jags.
+     * [1;5] => [1;0.5]
+     */
+    decrement *= ((25 + (runLength * runLength)) / 50);
+  }
+  
   var blendIntensity = 1 - decrement;
 
   if (sizeDecrease) {
-    var decrement = -decrement;
-    var blendIntensity = -decrement;
+    decrement = -decrement;
+    blendIntensity = -decrement;
   }
 
-  x = x - 1;
   var col = x;
   for (var col = x; col > x - runLength; col--) {
     var size = sizes[col];
     var color = colors[col];
 
-    var upperR = ((color >> 16) & 0xFF) * blendIntensity;
-    upperR += (1 - blendIntensity) * ((UPPER_BG_COLOR >> 16) & 0xFF);
-    upperR &= 0xFF;
-    var upperG = ((color >> 8) & 0xFF) * blendIntensity;
-    upperG += (1 - blendIntensity) * ((UPPER_BG_COLOR >> 8) & 0xFF);
-    upperG &= 0xFF;
-    var upperB = (color & 0xFF) * blendIntensity;
-    upperB += (1 - blendIntensity) * (UPPER_BG_COLOR & 0xFF);
-    upperB &= 0xFF;
+    var upperColor = blend_(color, UPPER_BG_COLOR, blendIntensity);
+    var lowerColor = blend_(color, LOWER_BG_COLOR, blendIntensity);
+    
+    var upperRange = sheet.getRange(MID - size + 1, col + 1, 1, 1);
+    var lowerRange = sheet.getRange(MID + size + 1, col + 1, 1, 1);
 
-    var lowerR = ((color >> 16) & 0xFF) * blendIntensity;
-    lowerR += (1 - blendIntensity) * ((LOWER_BG_COLOR >> 16) & 0xFF);
-    lowerR &= 0xFF;
-    var lowerG = ((color >> 8) & 0xFF) * blendIntensity;
-    lowerG += (1 - blendIntensity) * ((LOWER_BG_COLOR >> 8) & 0xFF);
-    lowerG &= 0xFF;
-    var lowerB = (color & 0xFF) * blendIntensity;
-    lowerB += (1 - blendIntensity) * (LOWER_BG_COLOR & 0xFF);
-    lowerB &= 0xFF;
+    /*
+     * Sub-pixel antialiasing hack: unicode!
+     * The major problem with this approach is the
+     * left-padding inside cells. It does however add
+     * an interesting effect.
+     */
+    var upperFontColor = blend_(upperColor, UPPER_BG_COLOR, 0.5);
+    var lowerFontColor = blend_(lowerColor, LOWER_BG_COLOR, 0.5);
 
-    var upperColor = (upperR << 16) | (upperG << 8) | upperB;
-    var lowerColor = (lowerR << 16) | (lowerG << 8) | lowerB;
+    upperRange.setValue("▄");
+    upperRange.setFontSize(5);
+    upperRange.setFontColor("#" + upperColor.toString(16));
+
+    lowerRange.setValue("▀");
+    lowerRange.setFontSize(5);
+    lowerRange.setFontColor("#" + lowerColor.toString(16));
+    
+    upperColor = blend_(upperColor, UPPER_BG_COLOR, 0.3);
+    lowerColor = blend_(lowerColor, LOWER_BG_COLOR, 0.3);
 
     screen[MID - size][col] = "#" + upperColor.toString(16);
     screen[MID + size][col] = "#" + lowerColor.toString(16);
-
+      
     blendIntensity -= decrement;
     if (blendIntensity < 0) {
       blendIntensity = 0;
@@ -238,20 +263,24 @@ function drawWallX_(x, k) {
     if (lin > MID - size && lin < MID + size)
       screen[lin][x] = "#" + color.toString(16);
 
+  
   if (x > 1) {
     var sizeDecrease = (size < sizes[x - 1]);
-    var invalid = (sizeDecrease != isSizeDecreasing);
+    if (size == sizes[x - 1])
+      sizeDecrease = wasSizeDecreasing;
+
+    var invalid = (sizeDecrease != wasSizeDecreasing);
 
     if (!invalid && size == sizes[x - 1]) {
       runLength += 1;
     } else {
-      smoothenColors_(x);
+      smoothenColors_(x - 1, sizeDecrease); // smoothen the last run
       runLength = 1;
     }
-    isSizeDecreasing = sizeDecrease;
+    wasSizeDecreasing = sizeDecrease;
   } else {
     runLengh = 1;
-    isSizeDecreasing = false;
+    wasSizeDecreasing = false;
   }
 }
 

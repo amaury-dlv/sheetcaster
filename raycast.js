@@ -19,6 +19,7 @@ var sheet;
 var side;
 
 // 10x10 map
+var S = 10
 var map =
   [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -60,8 +61,8 @@ function getMapFromSheet_() {
     var sheet = SpreadsheetApp.getActiveSheet();
     var tmp;
 
-    for (var line = 1; line <= 10; line++) {
-	for (var col = 1; col <= 10; col++) {
+    for (var line = 1; line <= S; line++) {
+	for (var col = 1; col <= S; col++) {
             tmp = sheet.getRange(line, col, 1, 1).getValue();
 	    if (tmp)
 		map[line - 1][col - 1] = tmp;
@@ -111,18 +112,22 @@ function left() {
   raycast_();
 }
 
+function isValidPos() { return Math.floor(gX0) >= 0 && Math.floor(gX0) < S
+                            && Math.floor(gY0) >= 0 && Math.floor(gY0) < S
+                            && !readMap_(gX0, gY0); }
+
 function up() {
   initMapFromSheet_();
   gX0 += Math.cos(gA) / 2;
   gY0 += Math.sin(gA) / 2;
-  raycast_();
+  if (isValidPos()) raycast_();
 }
 
 function down() {
   initMapFromSheet_();
   gX0 -= Math.cos(gA) / 2;
   gY0 -= Math.sin(gA) / 2;
-  raycast_();
+  if (isValidPos()) raycast_();
 }
 
 function initSheet() {

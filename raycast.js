@@ -56,6 +56,18 @@ function initScreen_() {
   }
 }
 
+// Display the map and the current position
+function refreshMap_() {
+    for (var line = 0; line < 10; line++) {
+	for (var col = 0; col < 10; col++) {
+	    if (line == Math.round(gX0) && col == Math.round(gY0))
+		screen[line][col] = "#960018";
+	    else if (map[line][col])
+		screen[line][col] = "#000000";
+	}
+    }
+}
+
 // Retrieve the map from the upper-left corner
 function getMapFromSheet_() {
   var sheet = SpreadsheetApp.getActiveSheet();
@@ -366,6 +378,7 @@ function raycast_() {
     k /= 2; // Hack to get the map look smaller
     drawWallX_(x, k);
   }
+  refreshMap_();
   sheet.getRange(1, 1, SIZE_Y, SIZE_X).setBackgroundColors(screen)
   savePlayerToSheet_(); // So it can be retrieved a the next frame
 }

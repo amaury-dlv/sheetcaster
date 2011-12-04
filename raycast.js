@@ -142,6 +142,15 @@ function down() {
   if (isValidPos()) raycast_();
 }
 
+function turn() {
+  initMapFromSheet_();
+  gA = gA + Math.PI;
+  if (gA < (2 * Math.PI)) {
+    gA -= (2 * Math.PI);
+  }
+  raycast_();
+}
+
 function initSheet() {
   var sheet = sheet = SpreadsheetApp.getActiveSheet();
 
@@ -392,6 +401,7 @@ function onOpen() {
       {name:"Look left",functionName:"left"},
       {name:"Look right",functionName:"right"},
       {name:"Move backward",functionName:"down"},
+      {name:"Turn",functionName:"turn"},
   ];
   spreadsheet.addMenu("Sheetcaster", subMenus);
 

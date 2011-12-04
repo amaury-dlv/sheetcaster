@@ -58,16 +58,16 @@ function initScreen_() {
 
 // Retrieve the map from the upper-left corner
 function getMapFromSheet_() {
-    var sheet = SpreadsheetApp.getActiveSheet();
-    var tmp;
+  var sheet = SpreadsheetApp.getActiveSheet();
+  var tmp;
 
-    for (var line = 1; line <= S; line++) {
-	for (var col = 1; col <= S; col++) {
-            tmp = sheet.getRange(line, col, 1, 1).getValue();
-	    if (tmp)
-		map[line - 1][col - 1] = tmp;
-	}
+  for (var line = 1; line <= S; line++) {
+    for (var col = 1; col <= S; col++) {
+      tmp = sheet.getRange(line, col, 1, 1).getValue();
+      if (tmp)
+	map[line - 1][col - 1] = tmp;
     }
+  }
 }
 
 // The player state has to be saved between each frame
@@ -170,7 +170,7 @@ function blend_(from, to, ratio) {
   var b = (from & 0xFF) * ratio;
   b += (1 - ratio) * (to & 0xFF);
   b &= 0xFF;
-  
+
   return (r << 16) | (g << 8) | b;
 }
 
@@ -189,7 +189,7 @@ function smoothenColors_(x, sizeDecrease) {
      */
     decrement *= ((25 + (runLength * runLength)) / 50);
   }
-  
+
   var blendIntensity = 1 - decrement;
 
   if (sizeDecrease) {
@@ -204,7 +204,7 @@ function smoothenColors_(x, sizeDecrease) {
 
     var upperColor = blend_(color, UPPER_BG_COLOR, blendIntensity);
     var lowerColor = blend_(color, LOWER_BG_COLOR, blendIntensity);
-    
+
     var upperRange = sheet.getRange(MID - size + 1, col + 1, 1, 1);
     var lowerRange = sheet.getRange(MID + size + 1, col + 1, 1, 1);
 
@@ -224,13 +224,13 @@ function smoothenColors_(x, sizeDecrease) {
     lowerRange.setValue("▀");
     lowerRange.setFontSize(5);
     lowerRange.setFontColor("#" + lowerColor.toString(16));
-    
+
     upperColor = blend_(upperColor, UPPER_BG_COLOR, 0.3);
     lowerColor = blend_(lowerColor, LOWER_BG_COLOR, 0.3);
 
     screen[MID - size][col] = "#" + upperColor.toString(16);
     screen[MID + size][col] = "#" + lowerColor.toString(16);
-      
+
     blendIntensity -= decrement;
     if (blendIntensity < 0) {
       blendIntensity = 0;
@@ -268,7 +268,7 @@ function drawWallX_(x, k) {
     if (lin > MID - size && lin < MID + size)
       screen[lin][x] = "#" + color.toString(16);
 
-  
+
   if (x > 1) {
     var sizeDecrease = (size < sizes[x - 1]);
     if (size == sizes[x - 1])

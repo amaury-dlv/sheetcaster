@@ -20,7 +20,6 @@ The default FOV and resolution can be changed by modifiying constants at the top
 # bugs
 
 -   It's very slow, we can't do much about it since it runs on server side.
--   Collisions are currently not handled (yet simple).
 
 # authors
 

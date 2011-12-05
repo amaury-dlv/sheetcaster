@@ -58,8 +58,8 @@ function initScreen_() {
 
 // Display the map and the current position
 function refreshMap_() {
-    for (var line = 0; line < 10; line++) {
-	for (var col = 0; col < 10; col++) {
+    for (var line = 0; line < S; line++) {
+	for (var col = 0; col < S; col++) {
 	    if (line == Math.round(gX0) && col == Math.round(gY0))
 		screen[line][col] = "#960018";
 	    else if (map[line][col])
@@ -171,11 +171,11 @@ function initSheet() {
   }
 
   for(var row = 1; row <= SIZE_Y; row++) {
-    sheet.setRowHeight(row, 10);
+    sheet.setRowHeight(row, S);
   }
 
   for(var col = 1; col <= SIZE_X; col++) {
-    sheet.setColumnWidth(col, 10);
+    sheet.setColumnWidth(col, S);
   }
 
   sheet.clear();

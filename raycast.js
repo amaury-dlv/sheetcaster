@@ -77,7 +77,13 @@ function getMapFromSheet_() {
     for (var col = 1; col <= S; col++) {
       tmp = sheet.getRange(line, col, 1, 1).getValue();
       if (tmp)
-	map[line - 1][col - 1] = tmp;
+      {
+	if (!map[line - 1][col - 1])
+          map[line - 1][col - 1] = 1;
+        else
+          map[line - 1][col - 1] = 0;
+        sheet.getRange(line, col, 1, 1).setValue("");
+      }
     }
   }
 }

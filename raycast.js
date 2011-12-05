@@ -396,12 +396,12 @@ function onOpen() {
   spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
   var subMenus = [
       {name:"Reset",functionName:"onOpen"},
-      {name:"Refresh",functionName:"refresh_"},
+      {name:"Refresh map",functionName:"refresh_"},
       {name:"Move forward",functionName:"up"},
       {name:"Look left",functionName:"left"},
       {name:"Look right",functionName:"right"},
       {name:"Move backward",functionName:"down"},
-      {name:"Turn",functionName:"turn"},
+      {name:"Turn around",functionName:"turn"},
   ];
   spreadsheet.addMenu("Sheetcaster", subMenus);
 

@@ -6,7 +6,7 @@ var gX0 = 3.2;
 var gY0 = 7.9;
 var gA = 5.6; // Direction the player is facing
 
-var STORE_LIN = SIZE_Y; // Where we store the player state between each frame
+var STORE_LIN = SIZE_Y + 1; // Where we store the player state between each frame
 var MID = Math.floor(SIZE_Y / 2);
 
 var UPPER_BG_COLOR = 0xDEE6FF;
@@ -130,22 +130,30 @@ function left() {
   raycast_();
 }
 
-function isValidPos() { return Math.floor(gX0) >= 0 && Math.floor(gX0) < S
-                            && Math.floor(gY0) >= 0 && Math.floor(gY0) < S
-                            && !readMap_(gX0, gY0); }
+function isValidPos(x, y) { return Math.floor(x) >= 0 && Math.floor(x) < S
+                            && Math.floor(y) >= 0 && Math.floor(y) < S
+                            && !readMap_(x, y); }
 
 function up() {
   initMapFromSheet_();
-  gX0 += Math.cos(gA) / 2;
-  gY0 += Math.sin(gA) / 2;
-  if (isValidPos()) raycast_();
+  x = gX0 + Math.cos(gA) / 2;
+  y = gY0 + Math.sin(gA) / 2;
+  if (isValidPos(x, y)) {
+    gX0 = x;
+    gY0 = y;
+    raycast_();
+  }
 }
 
 function down() {
   initMapFromSheet_();
-  gX0 -= Math.cos(gA) / 2;
-  gY0 -= Math.sin(gA) / 2;
-  if (isValidPos()) raycast_();
+  x = gX0 - Math.cos(gA) / 2;
+  y = gY0 - Math.sin(gA) / 2;
+  if (isValidPos(x, y)) {
+    gX0 = x;
+    gY0 = y;
+    raycast_();
+  }
 }
 
 function turn() {

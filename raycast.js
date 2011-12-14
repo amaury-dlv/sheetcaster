@@ -165,30 +165,27 @@ function turn() {
   raycast_();
 }
 
-function initSheet() {
-  var sheet = sheet = SpreadsheetApp.getActiveSheet();
+function initSheet(sheet) {
 
-  if(SIZE_X > sheet.getMaxColumns()) {
-    sheet.insertColumns(1, SIZE_X - sheet.getMaxColumns());
+  var columnCount = sheet.getMaxColumns();
+  if (SIZE_X > columnCount) {
+    sheet.insertColumns(1, SIZE_X - columnCount);
+  } else if (SIZE_X < columnCount) {
+    sheet.deleteColumns(1, columnCount - SIZE_X);
   }
 
-  if(SIZE_X < sheet.getMaxColumns()) {
-    sheet.deleteColumns(1, sheet.getMaxColumns() - SIZE_X);
+  var rowCount = sheet.getMaxRows();
+  if (SIZE_Y + 1 > rowCount) {
+    sheet.insertRows(2, SIZE_Y + 1 - rowCount);
+  } else if (SIZE_Y + 1 < rowCount) {
+    sheet.deleteRows(2, rowCount - SIZE_Y - 1);
   }
 
-  if(SIZE_Y + 1 > sheet.getMaxRows()) {
-    sheet.insertRows(2, SIZE_Y + 1 - sheet.getMaxRows());
-  }
-
-  if(SIZE_Y + 1 < sheet.getMaxRows()) {
-    sheet.deleteRows(2, sheet.getMaxRows() - SIZE_Y);
-  }
-
-  for(var row = 1; row <= SIZE_Y; row++) {
+  for (var row = 1; row <= SIZE_Y; row++) {
     sheet.setRowHeight(row, S);
   }
 
-  for(var col = 1; col <= SIZE_X; col++) {
+  for (var col = 1; col <= SIZE_X; col++) {
     sheet.setColumnWidth(col, S);
   }
 
@@ -421,6 +418,6 @@ function onOpen() {
   spreadsheet.addMenu("Sheetcaster", subMenus);
 
   sheet = SpreadsheetApp.getActiveSheet();
-  initSheet();
+  initSheet(sheet);
   raycast_();
 }

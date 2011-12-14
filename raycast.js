@@ -236,33 +236,11 @@ function smoothenColors_(x, sizeDecrease) {
 
     var upperColor = blend_(color, UPPER_BG_COLOR, blendIntensity);
     var lowerColor = blend_(color, LOWER_BG_COLOR, blendIntensity);
-/*
-    var upperRange = sheet.getRange(MID - size + 1, col + 1, 1, 1);
-    var lowerRange = sheet.getRange(MID + size + 1, col + 1, 1, 1);
-*/
-    /*
-     * Sub-pixel antialiasing hack: unicode!
-     * The major problem with this approach is the
-     * left-padding inside cells. It does however add
-     * an interesting effect.
-     */
-/*
-    var upperFontColor = blend_(upperColor, UPPER_BG_COLOR, 0.5);
-    var lowerFontColor = blend_(lowerColor, LOWER_BG_COLOR, 0.5);
 
-    upperRange.setValue("▄");
-    upperRange.setFontSize(5);
-    upperRange.setFontColor("#" + upperColor.toString(16));
-
-    lowerRange.setValue("▀");
-    lowerRange.setFontSize(5);
-    lowerRange.setFontColor("#" + lowerColor.toString(16));
-
-    upperColor = blend_(upperColor, UPPER_BG_COLOR, 0.3);
-    lowerColor = blend_(lowerColor, LOWER_BG_COLOR, 0.3);
-*/
-    screen[MID - size][col] = "#" + upperColor.toString(16);
-    screen[MID + size][col] = "#" + lowerColor.toString(16);
+    if (size <= MID) {
+      screen[MID - size][col] = "#" + upperColor.toString(16);
+      screen[MID + size - 1][col] = "#" + lowerColor.toString(16);
+    }
 
     blendIntensity -= decrement;
     if (blendIntensity < 0) {
@@ -289,18 +267,11 @@ function drawWallX_(x, k) {
   var size;
 
   size = (k <= 0 ? MID : SIZE_Y / (4*k));
-  size = Math.min(MID, Math.max(1, size));
-
   size = Math.round(size);
   sizes[x] = size;
 
   color = getColor_(k);
   colors[x] = color;
-
-  for (var lin = 0; lin < SIZE_Y; lin++)
-    if (lin > MID - size && lin < MID + size)
-      screen[lin][x] = "#" + color.toString(16);
-
 
   if (x > 1) {
     var sizeDecrease = (size < sizes[x - 1]);
@@ -320,6 +291,13 @@ function drawWallX_(x, k) {
     runLengh = 1;
     wasSizeDecreasing = false;
   }
+
+  size = Math.min(MID, Math.max(1, size));
+
+  for (var lin = 0; lin < SIZE_Y; lin++)
+    if (lin >= MID - size && lin < MID + size)
+      screen[lin][x] = "#" + color.toString(16);
+
 }
 
 // Given a value on the x axis (screen column), return the ray that will be cast
